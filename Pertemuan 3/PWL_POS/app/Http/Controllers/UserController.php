@@ -280,7 +280,43 @@ class UserController extends Controller
         }
     }
 
-    //public function tambah() {
+    public function validateUser($id)
+    {
+        // Lakukan validasi user berdasarkan $id yang diterima dari URL
+        $user = UserModel::find($id);
+
+        if (!$user) {
+            // Tampilkan pesan jika user tidak ditemukan
+            return back()->withErrors('User tidak ditemukan.');
+        }
+
+        // Lakukan proses validasi user
+        $user->status = 1; // Misalnya, ubah status user menjadi "divalidasi"
+        $user->save();
+
+        // Redirect ke halaman lain atau tampilkan pesan sukses
+        return redirect('/user')->with('success', 'User berhasil divalidasi.');
+    }
+//     public function showregis()
+// {
+//     $members = UserModel::where('status_validasi', 0)->get();
+
+
+//     $breadcrumb = (object) [
+//         'title' => 'Edit User',
+//         'list' => ['Home', 'Members']
+//     ];
+
+//     $page = (object) [
+//         'title' => 'Edit User'
+//     ];
+
+//     $activeMenu = 'user';
+// dd($members);
+//     return view('welcome', ['breadcrumb'=> $breadcrumb, 'page' => $page, 'members'=> $members, 'activeMenu' => $activeMenu]);
+// }
+
+//     //public function tambah() {
       //  return view('user_tambah');
    // }
 

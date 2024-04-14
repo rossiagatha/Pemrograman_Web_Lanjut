@@ -20,7 +20,8 @@ class UserSeeder extends Seeder
             'level_id' => 1,
             'username' => 'admin',
             'nama' => 'Administrator',
-            'password' => Hash::make('12345'), //Class untuk mengekripsi/hash password
+            'password' => Hash::make('12345'),//Class untuk mengekripsi/hash password
+            'status_validasi' => 1 
         ],
         [
             'user_id' => 2,
@@ -28,6 +29,7 @@ class UserSeeder extends Seeder
             'username' => 'manager',
             'nama' => 'Manager',
             'password' => Hash::make('12345'),
+            'status_validasi' => 1 
         ],
         [
             'user_id' => 3,
@@ -35,6 +37,7 @@ class UserSeeder extends Seeder
             'username' => 'staff',
             'nama' => 'Staff/Kasir',
             'password' => Hash::make('12345'),
+            'status_validasi' => 1 
         ],
     ];
     DB::table('m_user')->insert($data);

@@ -21,6 +21,7 @@
         <p>Dashboard</p>
         </a>
         </li>
+        @if (auth()->user()->level->level_nama !='Member')
         <li class="nav-header">Data Pengguna</li>
         <li class="nav-item">
             <a href="{{ url('/level')}}" class="nav-link {{ ($activeMenu == 'level')? 'active' : '' }}">
@@ -50,14 +51,22 @@
         <li class="nav-header">Data Transaksi</li>
         <li class="nav-item">
             <a href="{{ url('/stok')}}" class="nav-link {{ ($activeMenu == 'stok')? 'active' : '' }}">
-                <i class="nav-icon far fa-cubes"></i>
+                <i class="nav-icon fas fa-cubes"></i>
                 <p>Stok Barang</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ url('/barang')}}" class="nav-link {{ ($activeMenu == 'penjualan')? 'active' : '' }}">
-                <i class="nav-icon far fa-cash-register"></i>
+            <a href="{{ url('/riwayat')}}" class="nav-link {{ ($activeMenu == 'riwayat')? 'active' : '' }}">
+                <i class="nav-icon fas fa-cash-register"></i>
                 <p>Transaksi Penjualan</p>
+            </a>
+        </li>
+        @endif
+        
+        <li class="nav-item">
+            <a href="{{ route('logout')}}" class="nav-link {{ ($activeMenu == 'logout')? 'active' : '' }}">
+                <i class="nav-icon fas fa-sign-out-alt"></i>
+                <p>Logout</p>
             </a>
         </li>
       </ul>

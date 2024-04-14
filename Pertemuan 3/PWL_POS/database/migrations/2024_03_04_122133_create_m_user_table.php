@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('username', 20)->unique(); //unique untuk memastikan tidak ada username yang sama
             $table->string('nama', 100);
             $table->string('password');
+            $table->string('profil_img')->nullable();
+            $table->boolean('status_validasi')->default(0);
             $table->timestamps();
 
             //mendefinisikan Foreign Key pada kolom level_id mengacu pada kolom level_id di table m_level

@@ -17,7 +17,9 @@
   <link rel="stylesheet" href="{{asset ('adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset ('adminlte/dist/css/adminlte.min.css') }}">
-
+<!-- Select2 -->
+<link rel="stylesheet" href="{{asset('adminLte/plugins/select2/css/select2.min.css')}}">
+<link rel="stylesheet" href="{{asset('adminLte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
   @stack('css')
 </head>
 <body class="hold-transition sidebar-mini">
@@ -76,6 +78,7 @@
 <script src="{{ asset ('adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset ('adminlte/dist/js/adminlte.min.js') }}"></script>
+<script src="{{ asset ('adminlte/plugins/select2/js/select2.full.min.js')}}"></script>
 <script>
     $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
 </script>

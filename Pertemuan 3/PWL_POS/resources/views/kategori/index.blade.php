@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layouts.template')
 
 {{-- Customize layout sections --}}
 
@@ -11,7 +11,11 @@
         <div class="card">
             <div class="card-header">Manage Kategori</div>
             <div class="card-body">
-                {{ $dataTable->table() }}
+               <table class="table table-bordered table-striped table-hover table-sm" id="table_barang">
+                <thead>
+                    <tr><th>ID Barang</th><th>Kode Barang</th><th>Nama Barang</th><th>Harga Beli</th><th>Harga Jual</th><th>Kategori</th><th>Aksi</th></tr>
+                </thead>
+            </table>
             </div>
         </div>
     </div>
