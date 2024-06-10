@@ -30,8 +30,9 @@ class LevelController extends Controller
         ];
 
         $activeMenu = 'level';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('level.level', ['breadcrumb' => $breadcrumb, 'page' => $page,'activeMenu' => $activeMenu]);
+        return view('level.level', ['breadcrumb' => $breadcrumb,'members' => $members , 'page' => $page,'activeMenu' => $activeMenu]);
 
         // $data = DB::select('select * from m_level');
         // return view('level', ['data' => $data]);
@@ -66,8 +67,9 @@ class LevelController extends Controller
 
         $level = LevelModel::all();
         $activeMenu = 'level';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('level.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'level' => $level, 'activeMenu' => $activeMenu]);
+        return view('level.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'members' => $members, 'level' => $level, 'activeMenu' => $activeMenu]);
     }
 
     //menyimpan perubahan data level
@@ -101,8 +103,9 @@ class LevelController extends Controller
         ];
 
         $activeMenu = 'level';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('level.edit', ['breadcrumb'=> $breadcrumb, 'page' => $page, 'level'=> $level, 'user' => $user, 'activeMenu' => $activeMenu]);
+        return view('level.edit', ['breadcrumb'=> $breadcrumb, 'page' => $page, 'level'=> $level, 'members' => $members , 'user' => $user, 'activeMenu' => $activeMenu]);
     }
 
     //menampilkan detail lavel
@@ -120,8 +123,9 @@ class LevelController extends Controller
         ];
 
         $activeMenu = 'level';
+        $members = UserModel::where('status_validasi', 0)->get();
         
-        return view('level.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'level' => $level, 'activeMenu' => $activeMenu]);
+        return view('level.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'members' => $members ,'level' => $level, 'activeMenu' => $activeMenu]);
     }
 
      //menyimpan data barang baru

@@ -24,8 +24,9 @@ class StokController extends Controller
         ];
 
         $activeMenu = 'stok';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('stok.index', ['breadcrumb' => $breadcrumb, 'page' => $page,'activeMenu' => $activeMenu]);
+        return view('stok.index', ['breadcrumb' => $breadcrumb,'members' => $members , 'page' => $page,'activeMenu' => $activeMenu]);
 
    
     }
@@ -60,8 +61,9 @@ class StokController extends Controller
         $user = UserModel::all();
         $barang = barangModel::all();
         $activeMenu = 'stok';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('stok.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'user' => $user, 'barang' => $barang, 'activeMenu' => $activeMenu]);
+        return view('stok.create', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'user' => $user, 'barang' => $barang, 'activeMenu' => $activeMenu]);
     }
     //menampilkan halaman form edit stok
     public function edit(string $id)
@@ -80,8 +82,9 @@ class StokController extends Controller
         ];
 
         $activeMenu = 'stok';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('stok.edit', ['breadcrumb'=> $breadcrumb, 'page' => $page, 'barang'=> $barang, 'stok' => $stok,'user' => $user, 'activeMenu' => $activeMenu]);
+        return view('stok.edit', ['breadcrumb'=> $breadcrumb, 'members' => $members ,'page' => $page, 'barang'=> $barang, 'stok' => $stok,'user' => $user, 'activeMenu' => $activeMenu]);
     }
     //menampilkan detail stok
     public function show(string $id)
@@ -98,8 +101,9 @@ class StokController extends Controller
         ];
 
         $activeMenu = 'stok';
+        $members = UserModel::where('status_validasi', 0)->get();
         
-        return view('stok.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'stok' => $stok, 'activeMenu' => $activeMenu]);
+        return view('stok.show', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'stok' => $stok, 'activeMenu' => $activeMenu]);
     }
     //menyimpan data stok baru
     public function store(Request $request)
@@ -112,11 +116,15 @@ class StokController extends Controller
            
         ]);
 
-        StokModel::create([
-            'user_id' => $request->user_id,
+        $user = auth()->user()->user_id;
+        $stok = StokModel::where('barang_id', $request->barang_id)->first();
+        $jumlah = $stok->stok_jumlah;
+
+        $stok->update([
+            'user_id' => $user,
             'barang_id' => $request->barang_id,
             'stok_tanggal' => $request->stok_tanggal,
-            'stok_jumlah' => $request->stok_jumlah
+            'stok_jumlah' => $jumlah + $request->stok_jumlah,
         ]);
 
         return redirect('/stok')->with('success', 'Data stok berhasil disimpan');

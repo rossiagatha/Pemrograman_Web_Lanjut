@@ -6,6 +6,8 @@ use App\Models\KategoriModel;
 use App\Models\Barang;
 use App\Model\BarangModel;
 use App\Models\barangModel as ModelsBarangModel;
+use App\Models\UserModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -24,10 +26,11 @@ class BarangController extends Controller
         ];
 
         $activeMenu = 'barang';
+        $members = UserModel::where('status_validasi', 0)->get();
 
         $kategori = KategoriModel::all();
 
-        return view('barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'kategori' => $kategori,'activeMenu' => $activeMenu]);
+        return view('barang.index', ['breadcrumb' => $breadcrumb,'members' => $members , 'page' => $page, 'kategori' => $kategori,'activeMenu' => $activeMenu]);
     }
 
     public function list(Request $request)
@@ -64,24 +67,33 @@ class BarangController extends Controller
 
         $kategori = KategoriModel::all();
         $activeMenu = 'barang';
+        $lastBarang = ModelsBarangModel::latest('barang_id')->first();
+        $lastId = $lastBarang ? $lastBarang->barang_id : 0;
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('barang.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
+        return view('barang.create', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'kategori' => $kategori, 'lastId' => $lastId,'activeMenu' => $activeMenu]);
     }
 
     //menyimpan data barang baru
     public function store(Request $request)
     {
         $request->validate([
-            'barang_kode' => 'required|string|min:3|unique:m_barang,barang_kode',
+            // 'barang_kode' => 'required|string|min:3|unique:m_barang,barang_kode',
             'barang_nama' => 'required|string|max:100',
+            'barang_gambar' => 'required|mimes:jpg,png,jpeg',
             'harga_beli' => 'required|integer',
             'harga_jual' => 'required|integer',
             'kategori_id' => 'required|integer'
         ]);
+        $barangName = $request->barang_gambar->hashName();
+        $imgFile = $request->barang_gambar;
+        $imgFile->storeAs('/public/barangImg/', $barangName);
+        $kodeBarang = (ModelsBarangModel::count()+ 1).'/'.Carbon::now()->format('d-m-Y');
 
         ModelsBarangModel::create([
-            'barang_kode' => $request->barang_kode,
+            'barang_kode' => $kodeBarang,
             'barang_nama' => $request->barang_nama,
+            'barang_gambar' => $barangName,
             'harga_beli' => $request->harga_beli,
             'harga_jual' => $request->harga_jual,
             'kategori_id' => $request->kategori_id
@@ -105,8 +117,9 @@ class BarangController extends Controller
         ];
 
         $activeMenu = 'barang';
+        $members = UserModel::where('status_validasi', 0)->get();
         
-        return view('barang.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'barang' => $barang, 'activeMenu' => $activeMenu]);
+        return view('barang.show', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'barang' => $barang, 'activeMenu' => $activeMenu]);
     }
 
     //menampilkan halaman form edit barang
@@ -125,23 +138,32 @@ class BarangController extends Controller
         ];
 
         $activeMenu = 'barang';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('barang.edit', ['breadcrumb'=> $breadcrumb, 'page' => $page, 'barang'=> $barang, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
+        return view('barang.edit', ['breadcrumb'=> $breadcrumb,'members' => $members , 'page' => $page, 'barang'=> $barang, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
     }
     //menyimpan perubahan data barang
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'barang_kode' => 'required|string|min:3|unique:m_barang,barang_kode',
+            // 'barang_kode' => 'required|string|min:3|unique:m_barang,barang_kode,'.$id.',barang_id',
             'barang_nama' => 'required|string|max:100',
+            'barang_gambar' => 'nullable|mimes:jpg,png,jpeg',
             'harga_beli' => 'required|integer',
             'harga_jual' => 'required|integer',
-            'kategori_id' => 'required|integer'
+            'kategori_id' => 'required|integer',
         ]);
+        if ($request -> barang_gambar) {
+            $barangName = $request->barang_gambar->hashName();
+            $imgFile = $request->barang_gambar;
+            $imgFile->storeAs('/public/barangImg/', $barangName);
+        }
+        $oldData=ModelsBarangModel::find($id);
 
-        ModelsBarangModel::find($id)->update([
-            'barang_kode' => $request->barang_kode,
-            'barang_nama' => $request->barang_nama,
+        $oldData->update([
+            // 'barang_kode' => $request->barang_kode,
+            'barang_gambar' => $request->barang_gambar ? $barangName:$oldData->barang_gambar,
+            'barang _nama' => $request->barang_nama,
             'harga_beli' => $request->harga_beli,
             'harga_jual' => $request->harga_jual,
             'kategori_id' => $request->kategori_id

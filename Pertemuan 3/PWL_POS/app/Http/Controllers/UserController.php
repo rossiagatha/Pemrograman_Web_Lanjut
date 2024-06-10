@@ -143,8 +143,9 @@ class UserController extends Controller
         $activeMenu = 'user';
 
         $level = LevelModel::all();
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('user.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'level' => $level,'activeMenu' => $activeMenu]);
+        return view('user.index', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'level' => $level,'activeMenu' => $activeMenu]);
     }
 
     public function list(Request $request)
@@ -181,8 +182,9 @@ class UserController extends Controller
 
         $level = LevelModel::all();
         $activeMenu = 'user';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('user.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'level' => $level, 'activeMenu' => $activeMenu]);
+        return view('user.create', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'level' => $level, 'activeMenu' => $activeMenu]);
     }
 
     //menyimpan data user baru
@@ -220,8 +222,9 @@ class UserController extends Controller
         ];
 
         $activeMenu = 'user';
+        $members = UserModel::where('status_validasi', 0)->get();
         
-        return view('user.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'user' => $user, 'activeMenu' => $activeMenu]);
+        return view('user.show', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'user' => $user, 'activeMenu' => $activeMenu]);
     }
 
     //menampilkan halaman form edit user
@@ -240,8 +243,9 @@ class UserController extends Controller
         ];
 
         $activeMenu = 'user';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('user.edit', ['breadcrumb'=> $breadcrumb, 'page' => $page, 'user'=> $user, 'level' => $level, 'activeMenu' => $activeMenu]);
+        return view('user.edit', ['breadcrumb'=> $breadcrumb, 'members' => $members,'page' => $page, 'user'=> $user, 'level' => $level, 'activeMenu' => $activeMenu]);
     }
     //menyimpan perubahan data user
     public function update(Request $request, string $id)
@@ -249,7 +253,7 @@ class UserController extends Controller
         $request->validate([
             'username' => 'required|string|min:3|unique:m_user,username,'.$id.',user_id',
             'nama' => 'required|string|max:100',
-            'password' => 'nullable|min:5',
+            'password' => 'nullable|max:5',
             'level_id' => 'required|integer'
         ]);
 
@@ -297,63 +301,4 @@ class UserController extends Controller
         // Redirect ke halaman lain atau tampilkan pesan sukses
         return redirect('/user')->with('success', 'User berhasil divalidasi.');
     }
-//     public function showregis()
-// {
-//     $members = UserModel::where('status_validasi', 0)->get();
-
-
-//     $breadcrumb = (object) [
-//         'title' => 'Edit User',
-//         'list' => ['Home', 'Members']
-//     ];
-
-//     $page = (object) [
-//         'title' => 'Edit User'
-//     ];
-
-//     $activeMenu = 'user';
-// dd($members);
-//     return view('welcome', ['breadcrumb'=> $breadcrumb, 'page' => $page, 'members'=> $members, 'activeMenu' => $activeMenu]);
-// }
-
-//     //public function tambah() {
-      //  return view('user_tambah');
-   // }
-
-    //public function tambah_simpan(Request $request) {
-      //  UserModel::create([
-        //    'username' => $request->username,
-          //  'nama' => $request->nama,
-            //'password' => Hash::make('$request->password'),
-            //'level_id' => $request->level_id
-        //]);
-
-        // return redirect('/user');
-   // }
-
-   // public function ubah($id) {
-     //   $user = UserModel::find($id);
-       // return view('user_ubah', ['data' => $user]);
-    // }
-
-    // public function ubah_simpan($id, Request $request) {
-       // $user = UserModel::find($id);
-
-        // $user->username = $request->username;
-        // $user->nama = $request->nama;
-        // $user->password = Hash::make('$request->password');
-        // $user->level_id = $request->level_id;
-
-        // $user->save();
-
-        // return redirect('/user');
-   // }
-
-   // public function hapus($id) {
-     //   $user = UserModel::find($id);
-      //  $user->delete();
-
-       // return redirect('/user');
-   // }
-
 }

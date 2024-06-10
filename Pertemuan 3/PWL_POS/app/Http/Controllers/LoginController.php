@@ -14,7 +14,27 @@ class LoginController extends Controller
         return view('login');
     }
     function login(Request $request){
-        $request->validate([
+
+        // $credentials = $request->validate([
+        //     'username' => ['required'],
+        //     'password' => ['required'],
+        // ]);
+ 
+        // if (Auth::attempt($credentials)) {
+        //     $user = UserModel::where('username', $credentials['username'])->first();
+            
+        //     if($user->status == 0)  return back()->withErrors(['status' => 'Akun Anda belum divalidasi.']);
+
+        //     $request->session()->regenerate();
+ 
+        //     return redirect()->route('dashboard');
+        // }
+ 
+        // return back()->withErrors([
+        //     'authentication' => 'Username/Password salah',
+        // ])->onlyInput('username');
+        
+        $infologin = $request->validate([
             'username'=>'required',
             'password'=>'required'
         ],[
@@ -59,7 +79,7 @@ class LoginController extends Controller
         $newUser = $request->validate([
             'username' => ['required', 'unique:m_user,username'],
             'nama' => ['required'],
-            'password' => ['required', 'min:6'],
+            'password' => ['required', 'max:5'],
             'confirm_password' => ['required', 'same:password'],
             'profil_img' => ['required', 'mimes:png,jpg,jpeg', 'max:1024'],
         ]);
@@ -77,7 +97,8 @@ class LoginController extends Controller
 
             // Overide profile_img name
              $newUser['profil_img'] = $profileName;
-            
+             $newUser['password'] = bcrypt($request->password);
+
             UserModel::create($newUser);
 
             return redirect()->route('login')->with('success', 'Berhasil Register');
@@ -89,9 +110,4 @@ class LoginController extends Controller
             ]);
         }
     }
-
-    // public function show(){
-    //     $members = UserModel::where('status', 0)->get();
-    //     return view('welcome')->with('members', $members);
-    // }
 }

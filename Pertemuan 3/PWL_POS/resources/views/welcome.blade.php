@@ -12,12 +12,13 @@
                 {!! $chart->container() !!}
             </div>
             <div class="tablewraper">
-                <div class="title">
-                    <strong>List Member yang Belum Tervalidasi</strong>
-                </div>
+                
                 <div class="btnnwraper d-flex justify-content-end mb-3">
                     <a href="{{route('exportPdf')}}" class="btn btn-danger mr-2">Eksport PDF</a>
                     <a href="{{route('exportExcel')}}" class="btn btn-success mr-2">Eksport Excel</a>
+                </div>
+                <div class="title">
+                    <strong>List Member yang Belum Tervalidasi</strong>
                 </div>
                 <table class="table">
                     <thead>
@@ -27,7 +28,7 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <body>
                         @foreach($members as $member)
                             <tr>
                                 <td>{{ $member->username }}</td>
@@ -47,9 +48,34 @@
                                 </td>
                             </tr>
                         @endforeach
+                    </body>
+                </table>
+            </div>
+            <div class="tablewraper mt-5">
+                <div class="title">
+                    <strong>List User yang Sudah Tervalidasi</strong>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Nama</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($membersValidasi as $user)
+                            <tr>
+                                <td>{{ $user->username }}</td>
+                                <td>{{ $user->nama }}</td>
+                                <td>{{ $user->status ? 'Tervalidasi' : 'Sudah Tervalidasi' }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
+        </div>
+        
             @else
             <table class="table table-bordered table-striped table-hover table-sm">
                 <tr>

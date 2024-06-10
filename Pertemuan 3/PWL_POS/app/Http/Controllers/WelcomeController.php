@@ -20,8 +20,9 @@ class WelcomeController extends Controller
         $activeMenu = 'dashboard';
 
         $members = UserModel::where('status_validasi', 0)->get();
+        $membersValidasi = UserModel::where('status_validasi', 1)->get();
 
-        return view('welcome', ['breadcrumb' => $breadcrumb, 'members' => $members, 'chart' => $chart->build(),'activeMenu' => $activeMenu]);
+        return view('welcome', ['breadcrumb' => $breadcrumb, 'members' => $members, 'chart' => $chart->build(),'activeMenu' => $activeMenu, 'membersValidasi' => $membersValidasi]);
     }
     public function validateStatus(Request $request, $id){
         $user = UserModel::find($id);
@@ -46,4 +47,5 @@ class WelcomeController extends Controller
     public function exportExcel(){
         return Excel::download(new UsersExport, 'Daftar Member.xlsx');
     }
+
 }

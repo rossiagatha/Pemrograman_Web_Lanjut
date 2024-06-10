@@ -7,7 +7,7 @@
             <div class="card-tools"></div>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ url('barang') }}" class="form-horizontal">
+            <form method="POST" action="{{ url('barang') }}" class="form-horizontal" enctype="multipart/form-data">
             @csrf
             <div class="form-group row">
                 <label class="col-1 control-label col-form-label">Kategori</label>
@@ -26,7 +26,7 @@
             <div class="form-group row">
                 <label class="col-1 control-label col-form-label">Kode Barang</label>
                 <div class="col-11">
-                    <input type="text" class="form-control" id="barang_kode" name="barang_kode" value="{{ old('barang_kode') }}" required>
+                    <input type="text" class="form-control" id="barang_kode" name="barang_kode" value="{{ old('barang_kode') }}" required readonly>
                     @error('barang_kode')
                         <small class="form-text text-danger">{{ $message }}</small>
                     @enderror
@@ -44,7 +44,7 @@
             <div class="form-group row">
                 <label class="col-1 control-label col-form-label">Harga Beli</label>
                 <div class="col-11">
-                    <input type="harga_beli" class="form-control" id="harga_beli" name="harga_beli" required>
+                    <input type="number" class="form-control" id="harga_beli" name="harga_beli" value="{{ old('harga_beli') }}" required>
                     @error('harga_beli')
                         <small class="form-text text-danger">{{ $message }}</small>
                     @enderror
@@ -53,8 +53,17 @@
             <div class="form-group row">
                 <label class="col-1 control-label col-form-label">Harga Jual</label>
                 <div class="col-11">
-                    <input type="harga_jual" class="form-control" id="harga_jual" name="harga_jual" required>
+                    <input type="number" class="form-control" id="harga_jual" name="harga_jual" value="{{ old('harga_jual') }}" required>
                     @error('harga_jual')
+                        <small class="form-text text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-1 control-label col-form-label">Gambar Barang</label>
+                <div class="col-11">
+                    <input type="file" class="form-control" name="barang_gambar" required>
+                    @error('barang_gambar')
                         <small class="form-text text-danger">{{ $message }}</small>
                     @enderror
                 </div>
@@ -70,7 +79,39 @@
         </div>
     </div>
 @endsection
+
 @push('css')
 @endpush
+
 @push('js')
+<script>
+    const lastBarangId = {{ $lastId }};
+    const kategoriMap = {
+        @foreach($kategori as $item)
+        '{{ $item->kategori_id }}': '{{ $item->kategori_id }}',
+        @endforeach
+    };
+
+    document.getElementById('kategori_id').addEventListener('change', function() {
+        const selectedKategoriId = this.value;
+        const barangKodeInput = document.getElementById('barang_kode');
+        const isoDate = new Date().toISOString().slice(0, 10);
+
+        if (selectedKategoriId in kategoriMap) {
+            barangKodeInput.value = kategoriMap[selectedKategoriId] + '_' + lastBarangId + '_' + isoDate;
+        } else {
+            barangKodeInput.value = '';
+        }
+    });
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const harga_jual = parseFloat(document.getElementById('harga_jual').value);
+        const harga_beli = parseFloat(document.getElementById('harga_beli').value);
+
+        if (harga_jual <= harga_beli) {
+            alert('Harga Jual harus lebih besar daripada Harga Beli.');
+            event.preventDefault();
+        }
+    });
+</script>
 @endpush

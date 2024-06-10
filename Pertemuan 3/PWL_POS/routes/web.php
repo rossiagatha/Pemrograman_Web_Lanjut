@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\RiwayatController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\LevelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,7 +49,20 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.auth');
 Route::get('/register', [LoginController::class, 'register'])->name('register');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/storeMember', [LoginController::class, 'storeMember'])->name('register.auth');
+Route::post('proses_register', [AuthController::class, 'proses_register'])->name('proses_register');
 
+//kita atur juga untuk middleware menggunakan group pada routing
+//didalamnya terdapat group untuk mengecek kondisi login
+//jika user yang login merupakan admin maka akan diarahkan ke AdminController
+//jika user yang login merupakan manager maka akan diarahkan ke UserController
+Route::group(['middleware' => ['auth']], function() {
+    Route::group(['middleware' => ['cek_login:1']], function(){
+        Route::resource('admin', AdminController::class);
+    });
+    Route::group(['middleware' => ['cek_login:2']], function(){
+        Route::resource('manager', ManagerController::class);
+    });
+});
 
 Route::middleware(['auth'])->group(
     function () {
@@ -58,6 +73,11 @@ Route::middleware(['auth'])->group(
         Route::get('/exportPdf', [WelcomeController::class,'exportPdf'])->name('exportPdf');
         Route::get('/exportExcel', [WelcomeController::class,'exportExcel'])->name('exportExcel');
         Route::put('/validateUser/{id}', [WelcomeController::class, 'validateStatus'])->name('validateStatus');
+         // Tampilkan daftar users yang sudah dan belum tervalidasi
+         Route::get('/welcome', [UserController::class, 'showUsers'])->name('users.index');
+         // Route untuk memvalidasi user
+         Route::put('/validate/{id}', [UserController::class, 'validateUser'])->name('users.validate');
+       
         });
 
         Route::group(['prefix' => 'user'], function () {
@@ -69,7 +89,8 @@ Route::middleware(['auth'])->group(
             Route::get('/{id}/edit', [UserController::class, 'edit']);
             Route::put('/{id}', [UserController::class, 'update']);
             Route::delete('/{id}', [UserController::class, 'destroy']);
-            Route::post('/user/{id}', [UserController::class, 'validateUser'])->name('validate.user');
+            //Route::post('/user/{id}', [UserController::class, 'validateUser'])->name('validate.user');
+          
             
 
         });

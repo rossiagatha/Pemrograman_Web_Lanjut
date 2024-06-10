@@ -12,12 +12,7 @@
             <div class="form-group row">
                 <label class="col-1 control-label col-form-label">Nama Penyetok</label>
                 <div class="col-11">
-                    <select class="form-control" id="user_id" name="user_id" required>
-                        <option value="">- Pilih Penyetok -</option>
-                        @foreach ($user as $item)
-                            <option value="{{ $item->user_id }}">{{ $item->nama }}</option>
-                        @endforeach
-                    </select>
+                    <input type="text" class="form-control" id="user_id" name="user_id" value="{{ auth()->user()->nama}}" readonly>
                     @error('user_id')
                         <small class="form-text text-danger">{{ $message }}</small>
                     @enderror

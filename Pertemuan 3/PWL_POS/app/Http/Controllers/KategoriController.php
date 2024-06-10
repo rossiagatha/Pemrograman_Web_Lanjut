@@ -6,6 +6,7 @@ use App\Models\KategoriModel;
 use Illuminate\Http\Request;
 use App\DataTables\KategoriDataTable;
 use App\Models\barangModel;
+use App\Models\UserModel;
 use Yajra\DataTables\Facades\DataTables;
 
 class KategoriController extends Controller
@@ -40,8 +41,9 @@ class KategoriController extends Controller
         ];
 
         $activeMenu = 'kategori';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('kategori', ['breadcrumb' => $breadcrumb, 'page' => $page,'activeMenu' => $activeMenu]);
+        return view('kategori', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page,'activeMenu' => $activeMenu]);
     }
 
     public function list(Request $request)
@@ -75,8 +77,9 @@ class KategoriController extends Controller
 
         $kategori = KategoriModel::all();
         $activeMenu = 'kategori';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('kategori.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
+        return view('kategori.create', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
     }
 
     public function edit(string $id)
@@ -94,8 +97,9 @@ class KategoriController extends Controller
         ];
 
         $activeMenu = 'kategori';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('kategori.edit', ['breadcrumb'=> $breadcrumb, 'page' => $page, 'kategori'=> $kategori, 'barang' => $barang, 'activeMenu' => $activeMenu]);
+        return view('kategori.edit', ['breadcrumb'=> $breadcrumb, 'members' => $members ,'page' => $page, 'kategori'=> $kategori, 'barang' => $barang, 'activeMenu' => $activeMenu]);
     }
 
     //menampilkan detail kategori
@@ -113,8 +117,9 @@ class KategoriController extends Controller
         ];
 
         $activeMenu = 'kategori';
+        $members = UserModel::where('status_validasi', 0)->get();
         
-        return view('kategori.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
+        return view('kategori.show', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
     }
 
     //menyimpan data kategori baru

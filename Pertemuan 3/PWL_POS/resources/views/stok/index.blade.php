@@ -63,7 +63,17 @@
                         data: "stok_tanggal",
                         className: "",
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        render: function(data, type, row) {
+                        if (data) {
+                        var date = new Date(data);
+                        var year = date.getFullYear().toString();
+                        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                        var day = ('0' + date.getDate()).slice(-2);
+                        return day + '-' + month + '-' + year;
+                        }
+                        return '';
+                    }, 
                     },{
                         data: "stok_jumlah",
                         className: "",

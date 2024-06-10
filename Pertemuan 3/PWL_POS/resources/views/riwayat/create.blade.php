@@ -12,12 +12,7 @@
             <div class="form-group row">
                 <label class="col-1 control-label col-form-label">Staff Penjualan</label>
                 <div class="col-11">
-                    <select class="form-control" id="user_id" name="user_id" required>
-                        <option value="">- Pilih Staff Penjualan -</option>
-                        @foreach ($user as $item)
-                            <option value="{{ $item->user_id }}">{{ $item->nama }}</option>
-                        @endforeach
-                    </select>
+                    <input type="text" class="form-control" id="user_id" name="user_id" value="{{ auth()->user()->nama }}" readonly>
                     @error('user_id')
                         <small class="form-text text-danger">{{ $message }}</small>
                     @enderror
@@ -50,7 +45,7 @@
             <div class="form-group row">
                 <label class="col-1 control-label col-form-label">Kode Penjualan</label>
                 <div class="col-11">
-                    <input type="penjualan_kode" class="form-control" id="penjualan_kode" name="penjualan_kode" required>
+                    <input type="penjualan_kode" class="form-control" id="penjualan_kode" name="penjualan_kode" readonly>
                     @error('penjualan_kode')
                         <small class="form-text text-danger">{{ $message }}</small>
                     @enderror
@@ -79,8 +74,14 @@
 @push('css')
 @endpush
 @push('js')
-<script> $(document).ready(function() {
+<script>
+ $(document).ready(function() {
     $('.select2bs4').select2();
 });
+
+    const lastPenjualanId = {{ $lastId }};
+    const penjualanKodeInput = document.getElementById('penjualan_kode');
+    penjualanKodeInput.value = 'PJLN_' + (lastPenjualanId+1)
+
 </script>
 @endpush

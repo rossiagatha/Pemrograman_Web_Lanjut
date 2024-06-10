@@ -25,8 +25,9 @@ class RiwayatController extends Controller
         ];
 
         $activeMenu = 'riwayat';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('riwayat.index', ['breadcrumb' => $breadcrumb, 'page' => $page,'activeMenu' => $activeMenu]);
+        return view('riwayat.index', ['breadcrumb' => $breadcrumb,'members' => $members , 'page' => $page,'activeMenu' => $activeMenu]);
    
     }
 
@@ -61,8 +62,11 @@ class RiwayatController extends Controller
         $barang = stokModel::where('stok_jumlah', '>', 0)->with('barang')->get();
         $user = UserModel::all();
         $activeMenu = 'riwayat';
+        $lastRiwayat = riwayatModel::latest('penjualan_id')->first();
+        $lastId = $lastRiwayat ? $lastRiwayat->penjualan_id : 0;
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('riwayat.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'barang' => $barang, 'user' => $user, 'activeMenu' => $activeMenu]);
+        return view('riwayat.create', ['breadcrumb' => $breadcrumb,'members' => $members , 'page' => $page, 'barang' => $barang, 'user' => $user, 'lastId' => $lastId, 'activeMenu' => $activeMenu]);
     }
     //menampilkan halaman form edit riwayat
     public function edit(string $id)
@@ -82,8 +86,9 @@ class RiwayatController extends Controller
         ];
 
         $activeMenu = 'riwayat';
+        $members = UserModel::where('status_validasi', 0)->get();
 
-        return view('riwayat.edit', ['breadcrumb'=> $breadcrumb, 'page' => $page, 'riwayatPenjualan'=> $riwayatPenjualan, 'user' => $user, 'detail' => $detail,'barang' => $barang, 'activeMenu' => $activeMenu]);
+        return view('riwayat.edit', ['breadcrumb'=> $breadcrumb, 'members' => $members ,'page' => $page, 'riwayatPenjualan'=> $riwayatPenjualan, 'user' => $user, 'detail' => $detail,'barang' => $barang, 'activeMenu' => $activeMenu]);
     }
     //menampilkan detail riwayat
     public function show(string $id)
@@ -101,30 +106,34 @@ class RiwayatController extends Controller
         ];
 
         $activeMenu = 'riwayat';
+        $members = UserModel::where('status_validasi', 0)->get();
         
-        return view('riwayat.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'riwayat' => $riwayat, 'barangTerjual' => $barangTerjual, 'activeMenu' => $activeMenu]);
+        return view('riwayat.show', ['breadcrumb' => $breadcrumb, 'members' => $members ,'page' => $page, 'riwayat' => $riwayat, 'barangTerjual' => $barangTerjual, 'activeMenu' => $activeMenu]);
     }
     //menyimpan data riwayat baru
     public function store(Request $request)
     {
         $request->validate([
             'barang_id' => 'required|array',
-            'user_id' => 'required|integer',
+            'user_id' => 'required',
             'pembeli' => 'required|string',
             'penjualan_kode' => 'required|string',
             'penjualan_tanggal' => 'required|date',
         ]);
 
         $barang = barangModel::all();
-    
+        $user = auth()->user()->user_id;
 
         DB::beginTransaction();
 
-        $riwayat = riwayatModel::create($request->all());
-
-
+        $riwayat = riwayatModel::create([
+            'user_id' => $user,
+            'pembeli' => $request->pembeli,
+            'penjualan_kode' => $request->penjualan_kode,
+            'penjualan_tanggal' => $request->penjualan_tanggal,
+        ]);
+        
         $barangLaku = $request->only('barang_id');
-
 
         foreach ($barangLaku as $key => $item) {
 
